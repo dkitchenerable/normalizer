@@ -1,6 +1,8 @@
-class Normalizer
+require_relative 'venue'
 
+class Normalizer
     def initialize
+      @venue = Venue.new
     end
 
     ## reads a manifest file
@@ -13,7 +15,7 @@ class Normalizer
     # Arguments:
     #     manifest {[str]} -- /path/to/manifest
     def read_manifest(path_to_manifest)
-        ## your code goes here
+      @venue.create_from_file(path_to_manifest)
     end
 
 
@@ -28,7 +30,7 @@ class Normalizer
     #     section {[type]} -- [description]
     #     row {[type]} -- [description]
     def normalize(section, row)
-        ## your code goes here
-        return [nil, nil, false]
+      normalized = @venue.get_normalized(section, row)
+      return normalized
     end
 end
