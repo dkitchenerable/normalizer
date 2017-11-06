@@ -1,11 +1,13 @@
 require_relative 'section'
+require_relative 'baseball_validator'
 require 'csv'
 
 class Venue
   IngestionError = Class.new(StandardError)
 
-  def initialize(rule_type='')
+  def initialize(validator_type=BaseballValidator)
     @section_map = {} # section_name => section_object
+    @validator = BaseballValidator.new
   end
 
   def create_from_file(csv_path)
@@ -19,9 +21,10 @@ class Venue
   end
 
   def get_normalized(section, row)
-    venue_section = fetch_section(section)
-    if venue_section && venue_section.valid_row?(row)
-      return [venue_section.id, venue_section.get_row(row), "true"]
+    valid_section = @validator.get_valid_section(section, section_map)
+    row_id = @validator.get_valid_row(valid_section, row)
+    if valid_section && row_id
+      return [valid_section.id, row_id, "true"]
     else
       return [nil, nil, false]
     end
@@ -30,12 +33,6 @@ class Venue
   private
 
   attr_reader :section_map
-
-  def fetch_section(section)
-    digit = section.scan(/\d/).join('')
-    venue_section ||= ( section_map[digit] || section_map[section] )
-    venue_section
-  end
 
   def ingest_row(row)
     section = section_map[row["section_name"]]

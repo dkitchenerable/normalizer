@@ -19,7 +19,7 @@ class Section
     row_map.has_key?(row)
   end
 
-  private 
+  private
 
   attr_reader :row_map
 end
