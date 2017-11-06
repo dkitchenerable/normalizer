@@ -1,7 +1,8 @@
 require_relative 'section'
-require 'byebug'
+require 'csv'
+
 class Venue
-  #class IngestionError { StandardError.new() }
+  IngestionError = Class.new(StandardError)
 
   def initialize(rule_type='')
     @seat_map = {} # section_name => section_object
@@ -12,7 +13,7 @@ class Venue
       CSV.foreach(csv_path, headers: true) do |row|
         ingest_row(row)
       end
-    rescue CSV::MalformedCSVError => e
+    rescue StandardError => e
       raise IngestionError.new("CSV Issue: #{e.message}")
     end
   end
@@ -20,13 +21,15 @@ class Venue
   def get_normalized(section, row)
     venue_section = fetch_section(section)
     if venue_section && venue_section.valid_row?(row)
-      return [venue_section.id, venue_section.get_row(row), true]
+      return [venue_section.id, venue_section.get_row(row), "true"]
     else
       return [nil, nil, false]
     end
   end
 
   private
+
+  attr_reader :seat_map
 
   def fetch_section(section)
     digit = section.scan(/\d/).join('')
