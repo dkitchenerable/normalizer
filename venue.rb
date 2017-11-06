@@ -5,7 +5,7 @@ class Venue
   IngestionError = Class.new(StandardError)
 
   def initialize(rule_type='')
-    @seat_map = {} # section_name => section_object
+    @section_map = {} # section_name => section_object
   end
 
   def create_from_file(csv_path)
@@ -29,19 +29,19 @@ class Venue
 
   private
 
-  attr_reader :seat_map
+  attr_reader :section_map
 
   def fetch_section(section)
     digit = section.scan(/\d/).join('')
-    venue_section ||= ( @seat_map[digit] || @seat_map[section] )
+    venue_section ||= ( section_map[digit] || section_map[section] )
     venue_section
   end
 
   def ingest_row(row)
-    section = @seat_map[row["section_name"]]
+    section = section_map[row["section_name"]]
     section_id = row["section_id"]
     section = Section.new(row["section_id"]) if !section
     section.add_row(row["row_id"], row["row_name"])
-    @seat_map[row["section_name"]] = section
+    section_map[row["section_name"]] = section
   end
 end
