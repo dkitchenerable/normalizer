@@ -10,7 +10,7 @@ class VenueTest < Test::Unit::TestCase
   end
 
   def test_initialize_seat_map
-    assert_equal({}, @venue.send(:seat_map))
+    assert_equal({}, seat_map)
   end
 
   def test_create_from_file_error
@@ -20,6 +20,35 @@ class VenueTest < Test::Unit::TestCase
   end
 
   def test_create_from_file
+    @venue.create_from_file("tests/fixtures/test_manifest.csv")
+    assert_equal(seat_map.keys.size, 5, "Should create a key per section")
   end
 
+  def test_get_normalized_no_such_section
+    @venue.create_from_file("tests/fixtures/test_manifest.csv")
+    fake_section = "faker"
+    assert_nil(seat_map[fake_section])
+  end
+
+  def test_get_normalized_no_such_row
+    @venue.create_from_file("tests/fixtures/test_manifest.csv")
+    real_section = "133"
+    assert(seat_map[real_section])
+    assert_equal(@venue.get_normalized(real_section, "fakerow"), [nil, nil, false])
+  end
+
+  def test_get_normalized_matching_section
+    @venue.create_from_file("tests/fixtures/test_manifest.csv")
+    real_section = "133"
+    real_row = "A"
+    assert(seat_map[real_section])
+    assert(seat_map[real_section].valid_row?(real_row))
+    assert_equal(@venue.get_normalized(real_section, real_row), ["1", "0", "true"])
+  end
+
+  private
+
+  def seat_map
+    @venue.send(:seat_map)
+  end
 end
