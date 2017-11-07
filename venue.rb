@@ -6,7 +6,7 @@ class Venue
   IngestionError = Class.new(StandardError)
 
   def initialize(validator_type=BaseballValidator)
-    @section_map = {} # section_name => section_object
+    @section_map = {}
     @validator = BaseballValidator.new
   end
 

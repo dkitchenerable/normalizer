@@ -28,16 +28,6 @@ class SectionTest < Test::Unit::TestCase
     assert_equal(@section.get_row("foo-bar"), "1")
   end
 
-  def test_valid_row_false
-    @section.add_row("1", "foo-bar")
-    assert_equal(false, @section.valid_row?("foo-bar-false"))
-  end
-
-  def test_valid_row_true
-    @section.add_row("1", "foo-bar")
-    assert(@section.valid_row?("foo-bar"))
-  end
-
   private
 
   def row_map

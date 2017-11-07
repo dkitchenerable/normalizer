@@ -15,10 +15,6 @@ class Section
     row_map[row]
   end
 
-  def valid_row?(row)
-    row_map.has_key?(row)
-  end
-
   private
 
   attr_reader :row_map

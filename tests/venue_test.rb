@@ -42,7 +42,6 @@ class VenueTest < Test::Unit::TestCase
     real_section = "133"
     real_row = "A"
     assert(section_map[real_section])
-    assert(section_map[real_section].valid_row?(real_row))
     assert_equal(@venue.get_normalized(real_section, real_row), ["1", "0", "true"])
   end
 
@@ -51,7 +50,6 @@ class VenueTest < Test::Unit::TestCase
     real_section = "133"
     real_row = "A"
     assert(section_map[real_section])
-    assert(section_map[real_section].valid_row?(real_row))
     assert_equal(@venue.get_normalized(real_section, real_row), ["1", "0", "true"])
   end
 
