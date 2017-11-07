@@ -7,15 +7,23 @@ class Section
     @row_map = {}
   end
 
-  def add_row(row_id, row_name)
-    row_map[row_name] = row_id
+  def add_row(row_id, row)
+    row_map[formatted_row(row)] = row_id
   end
 
   def get_row(row)
-    row_map[row]
+    row_map[formatted_row(row)]
   end
 
   private
 
   attr_reader :row_map
+
+  def formatted_row(unformatted_row)
+    if unformatted_row
+      unformatted_row.chomp.downcase
+    else
+      nil
+    end
+  end
 end
