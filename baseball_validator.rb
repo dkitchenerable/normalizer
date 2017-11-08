@@ -1,6 +1,6 @@
 class BaseballValidator
 
-  MAPPED_NAMES = {
+  MAPPED_INITIALS = {
     "LG" => "Loge Box",
     "RS" => "Reserve",
     "FD" => "Field Box",
@@ -13,12 +13,12 @@ class BaseballValidator
 
   MAPPED_PARTIAL_NAMES = {
     "reserve" => "Reserve",
-    "pavilion" => "Right Field Pavilion",
-    "pavilion" => "Left Field Pavilion",
+    "loge box" => "Loge Box",
+    "loge" => "Loge Box",
+    "preferred field" => "Field Box",
     "field box" => "Field Box",
     "top deck" => "Top Deck",
-    "loge" => "Loge Box",
-    "loge box" => "Loge Box",
+    "pavilion" => ["Right Field Pavilion", "Left Field Pavilion"]
   }
 
   def get_valid_section(section, section_map)
@@ -37,7 +37,7 @@ class BaseballValidator
           by_full_name(section, section_map) ||
           by_digit(section, section_map) ||
           by_initials(section, section_map) ||
-          by_reserve(section, section_map)
+          by_partial(section, section_map)
         )
     venue_section
   end
@@ -55,35 +55,18 @@ class BaseballValidator
     temp_section = section.dup
     digit = section.scan(/\d/).join('')
     temp_section.slice!(digit)
-    mapped = MAPPED_NAMES[temp_section.strip]
+    mapped = MAPPED_INITIALS[temp_section.strip]
     map["#{mapped} #{digit}"]
-  end
-
-  def by_reserve(section, map)
-    digit = section.scan(/\d/).join('')
-    if section.downcase.include?("reserve")
-      map["Reserve #{digit}"]
-    elsif section.downcase.include?("loge box")
-      map["Loge Box #{digit}"]
-    elsif section.downcase.include?("loge")
-      map["Loge Box #{digit}"]
-    elsif section.downcase.include?("preferred field")
-      map["Field Box #{digit}"]
-    elsif section.downcase.include?("field box")
-      map["Field Box #{digit}"]
-    elsif section.downcase.include?("top deck")
-      map["Top Deck #{digit}"]
-    elsif section.downcase.include?("pavilion")
-      map["Right Field Pavilion #{digit}"] ||
-      map["Left Field Pavilion #{digit}"]
-    end
   end
 
   def by_partial(section, map)
     digit = section.scan(/\d/).join('')
     temp = nil
-    MAPPED_PARTIAL_NAMES.each_pair do |k, v|
-      temp = map["#{v} #{digit}"] if section.downcase.include?(k)
+    MAPPED_PARTIAL_NAMES.each_pair do |k, values|
+      values = [values] if values.is_a? String
+      values.each do |v| 
+        temp = map["#{v} #{digit}"] if section.downcase.include?(k)
+      end
       break if temp
     end
     temp
