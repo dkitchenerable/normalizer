@@ -36,7 +36,7 @@ class BaseballValidator
         (
           by_full_name(section, section_map) ||
           by_digit(section, section_map) ||
-          by_mapped_names(section, section_map) ||
+          by_initials(section, section_map) ||
           by_reserve(section, section_map)
         )
     venue_section
@@ -51,7 +51,7 @@ class BaseballValidator
     map[digit]
   end
 
-  def by_mapped_names(section, map)
+  def by_initials(section, map)
     temp_section = section.dup
     digit = section.scan(/\d/).join('')
     temp_section.slice!(digit)
